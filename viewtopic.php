@@ -387,7 +387,7 @@ while ($cur_post = $db->fetch_assoc($result))
 		foreach ($attachments[$cur_post['id']] as $cur_attach)
 		{
 			$attachment_extension = attach_get_extension($cur_attach['filename']);
-			$attach_output .= '<br />'."\n\t\t\t\t\t\t".attach_icon($attachment_extension).' <a href="attachment.php?item='.$cur_attach['id'].'">'.pun_htmlspecialchars($cur_attach['filename']).'</a>, '.$lang_attach['Size:'].' '.format_bytes($cur_attach['size']).', '.$lang_attach['Downloads:'].' '.number_format($cur_attach['downloads']);
+			$attach_output .= '<br />'."\n\t\t\t\t\t\t".attach_icon($attachment_extension).' <a href="attachment.php?item='.$cur_attach['id'].'">'.pun_htmlspecialchars($cur_attach['filename']).'</a>, '.$lang_attach['Size:'].' '.file_size($cur_attach['size']).', '.$lang_attach['Downloads:'].' '.number_format($cur_attach['downloads']);
 		}
 	}
 	// Attachment Mod Block End

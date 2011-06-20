@@ -328,11 +328,3 @@ function file_upload_error_message($error_code)
 			return 'Unknown upload error'; 
 	} 
 }
-
-function format_bytes($size) 
-{
-	$units = array('B', 'KB', 'MB', 'GB', 'TB');
-	for ($i = 0; $size >= 1024 && $i < 4; $i++)
-		$size /= 1024;
-	return round($size, 1).' '.$units[$i];
-}

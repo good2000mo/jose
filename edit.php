@@ -255,9 +255,9 @@ if($attach_allow_delete||$attach_allow_owner_delete||$attach_allow_upload){
 		$i=0;
 		while(list($attach_id,$attach_owner,$attach_filename,$attach_extension,$attach_size,$attach_downloads)=$db->fetch_row($result_attach)){
 			if(($attach_owner==$pun_user['id']&&$attach_allow_owner_delete)||$attach_allow_delete)
-				$attach_output .= '<br />'."\n".'<input type="checkbox" name="attach_delete_'.$i.'" value="'.$attach_id.'" />'.$lang_attach['Delete?'].' '.attach_icon($attach_extension).' <a href="./attachment.php?item='.$attach_id.'">'.pun_htmlspecialchars($attach_filename).'</a>, '.$lang_attach['Size:'].' '.format_bytes($attach_size).', '.$lang_attach['Downloads:'].' '.number_format($attach_downloads);
+				$attach_output .= '<br />'."\n".'<input type="checkbox" name="attach_delete_'.$i.'" value="'.$attach_id.'" />'.$lang_attach['Delete?'].' '.attach_icon($attach_extension).' <a href="./attachment.php?item='.$attach_id.'">'.pun_htmlspecialchars($attach_filename).'</a>, '.$lang_attach['Size:'].' '.file_size($attach_size).', '.$lang_attach['Downloads:'].' '.number_format($attach_downloads);
 			else
-				$attach_output_two .= '<br />'."\n".attach_icon($attach_extension).' <a href="./attachment.php?item='.$attach_id.'">'.pun_htmlspecialchars($attach_filename).'</a>, '.$lang_attach['Size:'].' '.format_bytes($attach_size).', '.$lang_attach['Downloads:'].' '.number_format($attach_downloads);
+				$attach_output_two .= '<br />'."\n".attach_icon($attach_extension).' <a href="./attachment.php?item='.$attach_id.'">'.pun_htmlspecialchars($attach_filename).'</a>, '.$lang_attach['Size:'].' '.file_size($attach_size).', '.$lang_attach['Downloads:'].' '.number_format($attach_downloads);
 			$i++;
 		}
 		if(strlen($attach_output)>0)

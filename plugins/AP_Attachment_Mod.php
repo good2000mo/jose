@@ -340,9 +340,9 @@ if(isset($_POST['read_documentation'])){	// the user wants to read the documenta
 								<tr>
 									<td class="tcl"><?php echo attach_icon($cur_attach['extension']).' <a href="attachment.php?item='.$cur_attach['id'].'">'.pun_htmlspecialchars($cur_attach['filename']) ?></a> by <a href="profile.php?id=<?php echo $cur_attach['owner'] ?>"><?php echo pun_htmlspecialchars($cur_attach['username']) ?></a></td>
 									<td class="tc2"><a href="viewtopic.php?pid=<?php echo $cur_attach['post_id'].'#p'.$cur_attach['post_id'] ?>">#<?php echo $cur_attach['post_id'] ?></a></td>
-									<td class="tc2"><?php echo format_bytes($cur_attach['size']) ?></td>
+									<td class="tc2"><?php echo file_size($cur_attach['size']) ?></td>
 									<td class="tc2"><?php echo number_format($cur_attach['downloads']) ?></td>
-									<td class="tc3"><?php echo format_bytes($cur_attach['size'] * $cur_attach['downloads']) ?></td>
+									<td class="tc3"><?php echo file_size($cur_attach['size'] * $cur_attach['downloads']) ?></td>
 									<td class="tcr">
 										<form name="alter_attachment_id_<?php echo $cur_attach['id'] ?>" id="example" method="post" action="<?php echo $_SERVER['REQUEST_URI'] ?>">
 											<input type="Submit" name="delete_attachment" value="Delete" /><input type="hidden" name="attachment_id" value="<?php echo $cur_attach['id'] ?>" />
@@ -420,9 +420,9 @@ elseif(isset($_POST['list_orphans']))
 								<tr>
 									<td class="tcl"><?php echo attach_icon($cur_attach['extension']).' <a href="attachment.php?item='.$cur_attach['id'].'">'.pun_htmlspecialchars($cur_attach['filename']) ?></a> by <a href="profile.php?id=<?php echo $cur_attach['owner'] ?>"><?php echo pun_htmlspecialchars($cur_attach['username']) ?></a></td>
 									<td class="tc2"><a href="viewtopic.php?pid=<?php echo $cur_attach['post_id'].'#p'.$cur_attach['post_id'] ?>">#<?php echo $cur_attach['post_id'] ?></a></td>
-									<td class="tc2"><?php echo format_bytes($cur_attach['size']) ?></td>
+									<td class="tc2"><?php echo file_size($cur_attach['size']) ?></td>
 									<td class="tc2"><?php echo number_format($cur_attach['downloads']) ?></td>
-									<td class="tc3"><?php echo format_bytes($cur_attach['size'] * $cur_attach['downloads']) ?></td>
+									<td class="tc3"><?php echo file_size($cur_attach['size'] * $cur_attach['downloads']) ?></td>
 									<td class="tcr">
 										<form name="alter_attachment_id_<?php echo $cur_attach['id'] ?>" id="example" method="post" action="<?php echo $_SERVER['REQUEST_URI'] ?>">
 											<input type="Submit" name="delete_attachment" value="Delete" /><input type="hidden" name="attachment_id" value="<?php echo $cur_attach['id'] ?>" />
@@ -1091,9 +1091,9 @@ elseif(isset($_POST['list_orphans']))
 			$result = $db->query('SELECT SUM(size),SUM(downloads),SUM(downloads*size) FROM `'.$db->prefix.'attach_2_files` WHERE 1')or error('Unable to summarize disk usage',__FILE__,__LINE__,$db->error());
 			if($db->num_rows($result)!=0){
 				list($attach_size,$attach_downloads,$attach_total_transfer) = $db->fetch_row($result);
-				$attach_output .= 'Used diskspace: '.format_bytes($attach_size)."<br />\n						";
+				$attach_output .= 'Used diskspace: '.file_size($attach_size)."<br />\n						";
 				$attach_output .= 'Total downloads: '.number_format($attach_downloads)." downloads<br />\n						";
-				$attach_output .= 'Total transfer: '.format_bytes($attach_total_transfer)." transferred<br />\n						";
+				$attach_output .= 'Total transfer: '.file_size($attach_total_transfer)." transferred<br />\n						";
 			}
 
 			// select the most downloaded file
@@ -1105,7 +1105,7 @@ elseif(isset($_POST['list_orphans']))
 				list($attach_most_owner) = $db->fetch_row($result);
 				else
 				$attach_most_owner = 'Now a guest';
-				$attach_output .= 'Most downloaded: '.number_format($attach_most_downloads).' downloads - <a href="attachment.php?item='.$attach_most_id.'">'.pun_htmlspecialchars($attach_most_filename).'</a> ('.format_bytes($attach_most_size).') posted by <a href="profile.php?section=admin&amp;id='.$attach_most_owner_id.'">'.pun_htmlspecialchars($attach_most_owner).'</a>';
+				$attach_output .= 'Most downloaded: '.number_format($attach_most_downloads).' downloads - <a href="attachment.php?item='.$attach_most_id.'">'.pun_htmlspecialchars($attach_most_filename).'</a> ('.file_size($attach_most_size).') posted by <a href="profile.php?section=admin&amp;id='.$attach_most_owner_id.'">'.pun_htmlspecialchars($attach_most_owner).'</a>';
 			}else
 			$attach_output .= 'Most downloaded: none';
 
@@ -1118,7 +1118,7 @@ elseif(isset($_POST['list_orphans']))
 				list($attach_most_owner) = $db->fetch_row($result);
 				else
 				$attach_most_owner = 'Now a guest';
-				$attach_output .= "<br />\n".'Largest total download: '.format_bytes($attach_most_downloads*$attach_most_size).' - <a href="attachment.php?item='.$attach_most_id.'">'.pun_htmlspecialchars($attach_most_filename).'</a> ('.format_bytes($attach_most_size).', '.number_format($attach_most_downloads).' downloads) posted by <a href="profile.php?section=admin&amp;id='.$attach_most_owner_id.'">'.pun_htmlspecialchars($attach_most_owner).'</a>';
+				$attach_output .= "<br />\n".'Largest total download: '.file_size($attach_most_downloads*$attach_most_size).' - <a href="attachment.php?item='.$attach_most_id.'">'.pun_htmlspecialchars($attach_most_filename).'</a> ('.file_size($attach_most_size).', '.number_format($attach_most_downloads).' downloads) posted by <a href="profile.php?section=admin&amp;id='.$attach_most_owner_id.'">'.pun_htmlspecialchars($attach_most_owner).'</a>';
 			}else
 			$attach_output .= "<br />\n".'Largest total download: none';
 		}else

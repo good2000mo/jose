@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- 主機: localhost
--- 建立日期: Jun 20, 2011, 10:57 AM
+-- 建立日期: Jun 20, 2011, 04:05 PM
 -- 伺服器版本: 5.0.51
 -- PHP 版本: 5.2.6
 
@@ -12,6 +12,52 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- 
 -- 資料庫: `jose`
 -- 
+
+-- --------------------------------------------------------
+
+-- 
+-- 資料表格式： `jose_attach_2_files`
+-- 
+
+CREATE TABLE `jose_attach_2_files` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `owner` int(10) NOT NULL default '0',
+  `post_id` int(10) NOT NULL default '0',
+  `filename` varchar(255) NOT NULL,
+  `extension` varchar(64) NOT NULL,
+  `mime` varchar(64) NOT NULL,
+  `location` text NOT NULL,
+  `size` int(10) NOT NULL default '0',
+  `downloads` int(10) NOT NULL default '0',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- 
+-- 列出以下資料庫的數據： `jose_attach_2_files`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- 資料表格式： `jose_attach_2_rules`
+-- 
+
+CREATE TABLE `jose_attach_2_rules` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `forum_id` int(10) NOT NULL default '0',
+  `group_id` int(10) NOT NULL default '0',
+  `rules` int(10) NOT NULL default '0',
+  `size` int(10) NOT NULL default '0',
+  `per_post` tinyint(4) NOT NULL default '1',
+  `file_ext` text NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- 
+-- 列出以下資料庫的數據： `jose_attach_2_rules`
+-- 
+
 
 -- --------------------------------------------------------
 
@@ -166,6 +212,16 @@ INSERT INTO `jose_config` VALUES ('p_sig_lines', '4');
 INSERT INTO `jose_config` VALUES ('p_allow_banned_email', '1');
 INSERT INTO `jose_config` VALUES ('p_allow_dupe_email', '0');
 INSERT INTO `jose_config` VALUES ('p_force_guest_email', '1');
+INSERT INTO `jose_config` VALUES ('attach_always_deny', 'html"htm"php"php3"php4"php5"exe"com"bat');
+INSERT INTO `jose_config` VALUES ('attach_basefolder', 'C:/AppServ/www/xman/jose/attachments/');
+INSERT INTO `jose_config` VALUES ('attach_create_orphans', '1');
+INSERT INTO `jose_config` VALUES ('attach_cur_version', '2.1.1');
+INSERT INTO `jose_config` VALUES ('attach_icon_folder', 'img/attach/');
+INSERT INTO `jose_config` VALUES ('attach_icon_extension', 'txt"log"doc"pdf"wav"mp3"ogg"avi"mpg"mpeg"png"jpg"jpeg"gif"zip"rar"7z"gz"tar');
+INSERT INTO `jose_config` VALUES ('attach_icon_name', 'text.png"text.png"doc.png"doc.png"audio.png"audio.png"audio.png"video.png"video.png"video.png"image.png"image.png"image.png"image.png"compress.png"compress.png"compress.png"compress.png"compress.png');
+INSERT INTO `jose_config` VALUES ('attach_max_size', '100000');
+INSERT INTO `jose_config` VALUES ('attach_subfolder', '21ec6ab5e35b3255128d0acfc97156ac');
+INSERT INTO `jose_config` VALUES ('attach_use_icon', '1');
 
 -- --------------------------------------------------------
 
@@ -296,7 +352,7 @@ CREATE TABLE `jose_online` (
 -- 列出以下資料庫的數據： `jose_online`
 -- 
 
-INSERT INTO `jose_online` VALUES (2, 'admin', 1308499548, 0, NULL, NULL);
+INSERT INTO `jose_online` VALUES (1, '127.0.0.1', 1308557093, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -539,4 +595,4 @@ CREATE TABLE `jose_users` (
 -- 
 
 INSERT INTO `jose_users` VALUES (1, 3, '訪客', '訪客', '訪客', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 'English', 'Air', 0, NULL, NULL, NULL, 0, '0.0.0.0', 0, NULL, NULL, NULL);
-INSERT INTO `jose_users` VALUES (2, 1, 'admin', 'c3d873d7fa9ac799e35693d4cc288d4a16ad3f96', 'comus@cdsj.edu.mo', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, 1, 1, 1, 1, 1, 8, 0, 0, 0, 'Traditional_Chinese', 'Air', 1, 1308498599, NULL, NULL, 1308498599, '127.0.0.1', 1308498745, NULL, NULL, NULL);
+INSERT INTO `jose_users` VALUES (2, 1, 'admin', 'c3d873d7fa9ac799e35693d4cc288d4a16ad3f96', 'comus@cdsj.edu.mo', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, 1, 1, 1, 1, 1, 8, 0, 0, 0, 'Traditional_Chinese', 'Air', 1, 1308498599, NULL, NULL, 1308498599, '127.0.0.1', 1308557084, NULL, NULL, NULL);

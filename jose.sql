@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- 主機: localhost
--- 建立日期: Jun 20, 2011, 04:05 PM
+-- 建立日期: Jun 20, 2011, 10:19 PM
 -- 伺服器版本: 5.0.51
 -- PHP 版本: 5.2.6
 
@@ -213,7 +213,7 @@ INSERT INTO `jose_config` VALUES ('p_allow_banned_email', '1');
 INSERT INTO `jose_config` VALUES ('p_allow_dupe_email', '0');
 INSERT INTO `jose_config` VALUES ('p_force_guest_email', '1');
 INSERT INTO `jose_config` VALUES ('attach_always_deny', 'html"htm"php"php3"php4"php5"exe"com"bat');
-INSERT INTO `jose_config` VALUES ('attach_basefolder', 'C:/AppServ/www/xman/jose/attachments/');
+INSERT INTO `jose_config` VALUES ('attach_basefolder', 'attachments');
 INSERT INTO `jose_config` VALUES ('attach_create_orphans', '1');
 INSERT INTO `jose_config` VALUES ('attach_cur_version', '2.1.1');
 INSERT INTO `jose_config` VALUES ('attach_icon_folder', 'img/attach/');
@@ -352,7 +352,7 @@ CREATE TABLE `jose_online` (
 -- 列出以下資料庫的數據： `jose_online`
 -- 
 
-INSERT INTO `jose_online` VALUES (1, '127.0.0.1', 1308557093, 0, NULL, NULL);
+INSERT INTO `jose_online` VALUES (1, '127.0.0.1', 1308579380, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -518,7 +518,7 @@ CREATE TABLE `jose_topics` (
 -- 列出以下資料庫的數據： `jose_topics`
 -- 
 
-INSERT INTO `jose_topics` VALUES (1, 'admin', '示例帖子', 1308498599, 1, 1308498599, 1, 'admin', 1, 0, 0, 0, NULL, 1);
+INSERT INTO `jose_topics` VALUES (1, 'admin', '示例帖子', 1308498599, 1, 1308498599, 1, 'admin', 3, 0, 0, 0, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -595,4 +595,4 @@ CREATE TABLE `jose_users` (
 -- 
 
 INSERT INTO `jose_users` VALUES (1, 3, '訪客', '訪客', '訪客', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 'English', 'Air', 0, NULL, NULL, NULL, 0, '0.0.0.0', 0, NULL, NULL, NULL);
-INSERT INTO `jose_users` VALUES (2, 1, 'admin', 'c3d873d7fa9ac799e35693d4cc288d4a16ad3f96', 'comus@cdsj.edu.mo', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, 1, 1, 1, 1, 1, 8, 0, 0, 0, 'Traditional_Chinese', 'Air', 1, 1308498599, NULL, NULL, 1308498599, '127.0.0.1', 1308557084, NULL, NULL, NULL);
+INSERT INTO `jose_users` VALUES (2, 1, 'admin', 'c3d873d7fa9ac799e35693d4cc288d4a16ad3f96', 'comus@cdsj.edu.mo', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, 1, 1, 1, 1, 1, 8, 0, 0, 0, 'Traditional_Chinese', 'Air', 1, 1308498599, NULL, NULL, 1308498599, '127.0.0.1', 1308578009, NULL, NULL, NULL);

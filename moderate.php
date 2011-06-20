@@ -9,6 +9,9 @@
 define('PUN_ROOT', dirname(__FILE__).'/');
 require PUN_ROOT.'include/common.php';
 
+// attachment-mod
+require PUN_ROOT.'include/attach/attach_incl.php'; //Attachment Mod row, loads variables, functions and lang file
+
 
 // This particular function doesn't require forum-based moderator access. It can be used
 // by all moderators and admins
@@ -94,6 +97,11 @@ if (isset($_GET['tid']))
 
 			if ($db->num_rows($result) != substr_count($posts, ',') + 1)
 				message($lang_common['Bad request']);
+
+			// attachment-mod: Attachment Mod Block Start
+			foreach(explode(',',$posts) as $value)
+				attach_delete_post($value);
+			//Attachment Mod Block End
 
 			// Delete the posts
 			$db->query('DELETE FROM '.$db->prefix.'posts WHERE id IN('.$posts.')') or error('Unable to delete posts', __FILE__, __LINE__, $db->error());
@@ -654,6 +662,11 @@ else if (isset($_POST['delete_topics']) || isset($_POST['delete_topics_comply'])
 
 		if ($db->num_rows($result) != substr_count($topics, ',') + 1)
 			message($lang_common['Bad request']);
+
+		// attachment-mod: Attachment Mod Block Start
+		foreach(explode(',',$topics) as $value)
+			attach_delete_thread($value);
+		//Attachment Mod Block End
 
 		// Delete the topics and any redirect topics
 		$db->query('DELETE FROM '.$db->prefix.'topics WHERE id IN('.$topics.') OR moved_to IN('.$topics.')') or error('Unable to delete topic', __FILE__, __LINE__, $db->error());

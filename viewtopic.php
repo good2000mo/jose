@@ -9,6 +9,9 @@
 define('PUN_ROOT', dirname(__FILE__).'/');
 require PUN_ROOT.'include/common.php';
 
+// attachment-mod
+require PUN_ROOT.'include/attach/attach_incl.php'; //Attachment Mod row, loads variables, functions and lang file
+
 
 if ($pun_user['g_read_board'] == '0')
 	message($lang_common['No view']);
@@ -222,6 +225,31 @@ if (empty($post_ids))
 
 // Retrieve the posts (and their respective poster/online status)
 $result = $db->query('SELECT u.email, u.title, u.url, u.location, u.signature, u.email_setting, u.num_posts, u.registered, u.admin_note, p.id, p.poster AS username, p.poster_id, p.poster_ip, p.poster_email, p.message, p.hide_smilies, p.posted, p.edited, p.edited_by, g.g_id, g.g_user_title, o.user_id AS is_online FROM '.$db->prefix.'posts AS p INNER JOIN '.$db->prefix.'users AS u ON u.id=p.poster_id INNER JOIN '.$db->prefix.'groups AS g ON g.g_id=u.group_id LEFT JOIN '.$db->prefix.'online AS o ON (o.user_id=u.id AND o.user_id!=1 AND o.idle=0) WHERE p.id IN ('.implode(',', $post_ids).') ORDER BY p.id', true) or error('Unable to fetch post info', __FILE__, __LINE__, $db->error());
+
+// attachment-mod: Attachment Mod Block Start
+$attachments = array();
+$attach_allow_download = false;
+if ($pun_user['g_id'] == PUN_ADMIN)
+	$attach_allow_download = true;
+else
+{
+	$result_attach_rules = $db->query('SELECT ar.rules FROM '.$db->prefix.'attach_2_rules AS ar WHERE ar.group_id='.$pun_user['group_id'].' AND ar.forum_id='.$cur_topic['forum_id'].' LIMIT 1') or error('Unable to fetch rules for the attachments', __FILE__, __LINE__, $db->error());
+	if ($db->num_rows($result_attach_rules))
+		$attach_allow_download = attach_rules($db->result($result_attach_rules), ATTACH_DOWNLOAD);
+}
+
+if ($attach_allow_download)
+{
+	$result_attach = $db->query('SELECT af.id, af.filename, af.post_id, af.size, af.downloads FROM '.$db->prefix.'attach_2_files AS af WHERE af.post_id IN ('.implode(',', $post_ids).') ORDER BY af.post_id') or error('Unable to fetch if there were any attachments', __FILE__, __LINE__, $db->error());
+	while ($cur_attach = $db->fetch_assoc($result_attach))
+	{
+		if (!isset($attachments[$cur_attach['post_id']]))
+			$attachments[$cur_attach['post_id']] = array();
+		$attachments[$cur_attach['post_id']][$cur_attach['id']] = $cur_attach;
+	}
+}
+// Attachment Mod Block End
+
 while ($cur_post = $db->fetch_assoc($result))
 {
 	$post_count++;
@@ -350,6 +378,19 @@ while ($cur_post = $db->fetch_assoc($result))
 			$signature_cache[$cur_post['poster_id']] = $signature;
 		}
 	}
+	
+	// attachment-mod: Attachment Mod Block Start
+	$attach_output = '';
+	if ($attach_allow_download && isset($attachments[$cur_post['id']]) && count($attachments[$cur_post['id']]) > 0)
+	{
+		$attach_output .= $lang_attach['Attachments:'].' ';
+		foreach ($attachments[$cur_post['id']] as $cur_attach)
+		{
+			$attachment_extension = attach_get_extension($cur_attach['filename']);
+			$attach_output .= '<br />'."\n\t\t\t\t\t\t".attach_icon($attachment_extension).' <a href="attachment.php?item='.$cur_attach['id'].'">'.pun_htmlspecialchars($cur_attach['filename']).'</a>, '.$lang_attach['Size:'].' '.format_bytes($cur_attach['size']).', '.$lang_attach['Downloads:'].' '.number_format($cur_attach['downloads']);
+		}
+	}
+	// Attachment Mod Block End
 
 ?>
 <div id="p<?php echo $cur_post['id'] ?>" class="blockpost<?php echo ($post_count % 2 == 0) ? ' roweven' : ' rowodd' ?><?php if ($cur_post['id'] == $cur_topic['first_post_id']) echo ' firstpost'; ?><?php if ($post_count == 1) echo ' blockpost1'; ?>">
@@ -371,6 +412,8 @@ while ($cur_post = $db->fetch_assoc($result))
 					<div class="postmsg">
 						<?php echo $cur_post['message']."\n" ?>
 <?php if ($cur_post['edited'] != '') echo "\t\t\t\t\t\t".'<p class="postedit"><em>'.$lang_topic['Last edit'].' '.pun_htmlspecialchars($cur_post['edited_by']).' ('.format_time($cur_post['edited']).')</em></p>'."\n"; ?>
+<?php // attachment-mod ?>
+<?php if ($attach_output != '') echo "\t\t\t\t\t".'<div class="postsignature"><hr />'.$attach_output.'</div>'."\n"; ## Attachment Mod row ?>
 					</div>
 <?php if ($signature != '') echo "\t\t\t\t\t".'<div class="postsignature postmsg"><hr />'.$signature.'</div>'."\n"; ?>
 				</div>

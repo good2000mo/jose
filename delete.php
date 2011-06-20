@@ -9,6 +9,9 @@
 define('PUN_ROOT', dirname(__FILE__).'/');
 require PUN_ROOT.'include/common.php';
 
+// attachment-mod
+require PUN_ROOT.'include/attach/attach_incl.php'; //Attachment Mod row, loads variables, functions and lang file
+
 
 if ($pun_user['g_read_board'] == '0')
 	message($lang_common['No view']);
@@ -55,6 +58,9 @@ if (isset($_POST['delete']))
 
 	if ($is_topic_post)
 	{
+		// attachment-mod
+		attach_delete_thread($cur_post['tid']);	// Attachment Mod , delete the attachments in the whole thread (orphan check is checked in this function)
+		
 		// Delete the topic and all of it's posts
 		delete_topic($cur_post['tid']);
 		update_forum($cur_post['fid']);
@@ -63,6 +69,9 @@ if (isset($_POST['delete']))
 	}
 	else
 	{
+		// attachment-mod
+		attach_delete_post($id);	// Attachment Mod , delete the attachments in this post (orphan check is checked in this function)
+		
 		// Delete just this one post
 		delete_post($id, $cur_post['tid']);
 		update_forum($cur_post['fid']);

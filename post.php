@@ -9,6 +9,9 @@
 define('PUN_ROOT', dirname(__FILE__).'/');
 require PUN_ROOT.'include/common.php';
 
+// attachment-mod
+require PUN_ROOT.'include/attach/attach_incl.php'; //Attachment Mod row, loads variables, functions and lang file
+
 
 if ($pun_user['g_read_board'] == '0')
 	message($lang_common['No view']);
@@ -393,6 +396,34 @@ if (isset($_POST['form_sent']))
 			pun_mail($pun_config['o_mailing_list'], $mail_subject, $mail_message);
 		}
 
+		// attachment-mod: Attachment Mod Block Start
+		if (isset($_FILES['attached_file']['error']) && $_FILES['attached_file']['error'] != 0 && $_FILES['attached_file']['error'] != 4)
+			error(file_upload_error_message($_FILES['attached_file']['error']), __FILE__, __LINE__);
+		
+		if (isset($_FILES['attached_file'])&&$_FILES['attached_file']['size']!=0&&is_uploaded_file($_FILES['attached_file']['tmp_name'])){
+			//fetch the rules for this forum for this group
+			$attach_result = $db->query('SELECT rules,size,file_ext FROM '.$db->prefix.'attach_2_rules WHERE group_id='.$pun_user['g_id'].' AND forum_id='.$cur_posting['id'].' LIMIT 1')or error('Unable to fetch attachment rules',__FILE__,__LINE__,$db->error());	
+			if($db->num_rows($attach_result)!=0||$pun_user['g_id']==PUN_ADMIN){
+				$attach_rules=0; $attach_size=0; $attach_file_ext=''; // just some defaults to get the parser to stop nagging me if it's an admin :D
+				if($db->num_rows($attach_result)!=0)
+					list($attach_rules,$attach_size,$attach_file_ext)=$db->fetch_row($attach_result);
+				//check so that the user is allowed to upload
+				if(attach_allow_upload($attach_rules,$attach_size,$attach_file_ext,$_FILES['attached_file']['size'],$_FILES['attached_file']['name'])){
+					// ok we're allowed to post ... time to fix everything... 
+					if(!attach_create_attachment($_FILES['attached_file']['name'],$_FILES['attached_file']['type'],$_FILES['attached_file']['size'],$_FILES['attached_file']['tmp_name'],$new_pid,count_chars($message))){
+						error('Error creating attachment, inform the owner of this bulletin board of this problem. (Most likely something to do with rights on the filesystem)',__FILE__,__LINE__);
+					}
+				}else{
+					// no output ... but if you want, enable this error (you really shouldn't need to as this will only happen if someone try to go around the restrictions
+					// error($lang_attach['Not allowed to post attachments']);
+				}
+			}else{
+				// no output ... but if you want, enable this error (you really shouldn't need to as this will only happen if someone try to go around the restrictions
+				// error($lang_attach['Not allowed to post attachments']);
+			}
+		}
+		// Attachment Mod Block End
+
 		// If the posting user is logged in, increment his/her post count
 		if (!$pun_user['is_guest'])
 		{
@@ -416,7 +447,9 @@ if (isset($_POST['form_sent']))
 if ($tid)
 {
 	$action = $lang_post['Post a reply'];
-	$form = '<form id="post" method="post" action="post.php?action=post&amp;tid='.$tid.'" onsubmit="this.submit.disabled=true;if(process_form(this)){return true;}else{this.submit.disabled=false;return false;}">';
+	
+	// attachment-mod: replace
+	$form = '<form id="post" method="post" enctype="multipart/form-data" action="post.php?action=post&amp;tid='.$tid.'" onsubmit="this.submit.disabled=true;if(process_form(this)){return true;}else{this.submit.disabled=false;return false;}">'; //Attachment Mod has added enctype="multipart/form-data"
 
 	// If a quote ID was specified in the url
 	if (isset($_GET['qid']))
@@ -499,7 +532,8 @@ if ($tid)
 else if ($fid)
 {
 	$action = $lang_post['Post new topic'];
-	$form = '<form id="post" method="post" action="post.php?action=post&amp;fid='.$fid.'" onsubmit="return process_form(this)">';
+	// attachment-mod: replace
+	$form = '<form id="post" method="post" enctype="multipart/form-data" action="post.php?action=post&amp;fid='.$fid.'" onsubmit="return process_form(this)">';		//Attachment Mod has added enctype="multipart/form-data"
 }
 else
 	message($lang_common['Bad request']);
@@ -518,6 +552,21 @@ else
 }
 
 define('PUN_ACTIVE_PAGE', 'index');
+
+// attachment-mod: Attachment Mod Block Start
+//Fetch some stuff so we know if the user is allowed to attach files to the post ... oh and preview won't work... I'm not going to add shitload of stuff to get some temporary upload area ;)
+$attach_allowed = false;
+$attach_result = $db->query('SELECT rules,size FROM '.$db->prefix.'attach_2_rules WHERE group_id='.$pun_user['g_id'].' AND forum_id='.$cur_posting['id'].' LIMIT 1')or error('Unable to fetch attachment rules',__FILE__,__LINE__,$db->error());	
+if($db->num_rows($attach_result)){
+	list($attach_rules,$attach_size)=$db->fetch_row($attach_result);
+	if(attach_rules($attach_rules,ATTACH_UPLOAD))
+		$attach_allowed=true;
+}elseif($pun_user['g_id']==PUN_ADMIN){
+	$attach_allowed=true;
+	$attach_size=$pun_config['attach_max_size'];	
+}
+//Attachment Mod Block End
+
 require PUN_ROOT.'header.php';
 
 ?>
@@ -624,6 +673,22 @@ if ($fid): ?>
 					</div>
 				</fieldset>
 <?php
+
+// attachment-mod: Attachment Mod Block Start
+if($attach_allowed){
+?>
+			</div>
+			<div class="inform">
+				<fieldset>
+					<legend><?php echo $lang_attach['Attachment'] ?></legend>
+					<div class="infldset">
+						<input type="hidden" name="MAX_FILE_SIZE" value="<?php print $attach_size; ?>" /><input type="file" name="attached_file" size="80" tabindex="<?php echo $cur_index++ ?>" /><br />
+						<?php echo $lang_attach['Note'] ?>
+					</div>
+				</fieldset>
+<?php
+}
+//Attachment Mod Block End
 
 $checkboxes = array();
 if ($is_admmod)

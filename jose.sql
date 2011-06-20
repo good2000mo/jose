@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- 主機: localhost
--- 建立日期: Jun 20, 2011, 10:49 AM
+-- 建立日期: Jun 20, 2011, 10:57 AM
 -- 伺服器版本: 5.0.51
 -- PHP 版本: 5.2.6
 
@@ -135,7 +135,6 @@ INSERT INTO `jose_config` VALUES ('o_avatars_width', '60');
 INSERT INTO `jose_config` VALUES ('o_avatars_height', '60');
 INSERT INTO `jose_config` VALUES ('o_avatars_size', '10240');
 INSERT INTO `jose_config` VALUES ('o_search_all_forums', '1');
-INSERT INTO `jose_config` VALUES ('o_base_url', 'http://127.0.0.1/xman/jose');
 INSERT INTO `jose_config` VALUES ('o_admin_email', 'comus@cdsj.edu.mo');
 INSERT INTO `jose_config` VALUES ('o_webmaster_email', 'comus@cdsj.edu.mo');
 INSERT INTO `jose_config` VALUES ('o_forum_subscriptions', '1');

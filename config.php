@@ -14,4 +14,6 @@ $cookie_path = '/';
 $cookie_secure = 0;
 $cookie_seed = '2e1122ffc3e16f6f';
 
+$base_url = 'http://127.0.0.1/xman/jose';
+
 define('PUN', 1);

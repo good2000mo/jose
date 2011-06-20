@@ -100,11 +100,11 @@ function attach_create_attachment($name='', $mime='', $size=0, $tmp_name='', $po
 		global $db, $pun_user, $pun_config;
 
 		// fetch an unique name for the file
-		$unique_name = attach_generate_filename($pun_config['attach_basefolder'].$pun_config['attach_subfolder'].'/',$messagelenght,$size);
+		$unique_name = attach_generate_filename(PUN_ROOT.$pun_config['attach_basefolder'].'/'.$pun_config['attach_subfolder'].'/',$messagelenght,$size);
 
 		// move the uploaded file from temp to the attachment folder and rename the file to the unique name
-		if(!move_uploaded_file($tmp_name,$pun_config['attach_basefolder'].$pun_config['attach_subfolder'].'/'.$unique_name))
-			error('Unable to move file from: '.$tmp_name.' to '.$pun_config['attach_basefolder'].$pun_config['attach_subfolder'].'/'.$unique_name.'',__FILE__,__LINE__);
+		if(!move_uploaded_file($tmp_name,PUN_ROOT.$pun_config['attach_basefolder'].'/'.$pun_config['attach_subfolder'].'/'.$unique_name))
+			error('Unable to move file from: '.$tmp_name.' to '.PUN_ROOT.$pun_config['attach_basefolder'].'/'.$pun_config['attach_subfolder'].'/'.$unique_name.'',__FILE__,__LINE__);
 			//return false;
 			
 		if(strlen($mime)==0)
@@ -122,15 +122,15 @@ function attach_create_subfolder($newfolder=''){
 		return false;
 		
 	// check to see if that folder is there already, then just update the config ...
-	if(!is_dir($pun_config['attach_basefolder'].$newfolder)){
+	if(!is_dir(PUN_ROOT.$pun_config['attach_basefolder'].'/'.$newfolder)){
 		// if the folder doesn't excist, try to create it
-		if(!mkdir($pun_config['attach_basefolder'].$newfolder,0755))
-			error('Unable to create new subfolder with name \''.$pun_config['attach_basefolder'].$newfolder.'\' with mode 0755',__FILE__,__LINE__);
+		if(!mkdir(PUN_ROOT.$pun_config['attach_basefolder'].'/'.$newfolder,0755))
+			error('Unable to create new subfolder with name \''.PUN_ROOT.$pun_config['attach_basefolder'].'/'.$newfolder.'\' with mode 0755',__FILE__,__LINE__);
 		// create a .htaccess and index.html file in the new subfolder
-		if(!copy($pun_config['attach_basefolder'].'.htaccess', $pun_config['attach_basefolder'].$newfolder.'/.htaccess'))
-			error('Unable to copy .htaccess file to new subfolder with name \''.$pun_config['attach_basefolder'].$newfolder.'\'',__FILE__,__LINE__);
-		if(!copy($pun_config['attach_basefolder'].'index.html', $pun_config['attach_basefolder'].$newfolder.'/index.html'))
-			error('Unable to copy index.html file to new subfolder with name \''.$pun_config['attach_basefolder'].$newfolder.'\'',__FILE__,__LINE__);
+		if(!copy(PUN_ROOT.$pun_config['attach_basefolder'].'/'.'.htaccess', PUN_ROOT.$pun_config['attach_basefolder'].'/'.$newfolder.'/.htaccess'))
+			error('Unable to copy .htaccess file to new subfolder with name \''.PUN_ROOT.$pun_config['attach_basefolder'].'/'.$newfolder.'\'',__FILE__,__LINE__);
+		if(!copy(PUN_ROOT.$pun_config['attach_basefolder'].'/'.'index.html', PUN_ROOT.$pun_config['attach_basefolder'].'/'.$newfolder.'/index.html'))
+			error('Unable to copy index.html file to new subfolder with name \''.PUN_ROOT.$pun_config['attach_basefolder'].'/'.$newfolder.'\'',__FILE__,__LINE__);
 		// if the folder was created continue
 	}
 	$form = array ('subfolder' => $newfolder);
@@ -261,7 +261,7 @@ function attach_delete_attachment($item=0){
 		if($db->num_rows($result)==1)
 			list($attach_location) = $db->fetch_row($result);		
 		// first empty the file
-		$fp = fopen($pun_config['attach_basefolder'].$attach_location,'wb'); //wb = write, reset file to 0 bytes if existing, and b is just for windows, to tell it's binary mode...is ignored on other OS:es
+		$fp = fopen(PUN_ROOT.$pun_config['attach_basefolder'].'/'.$attach_location,'wb'); //wb = write, reset file to 0 bytes if existing, and b is just for windows, to tell it's binary mode...is ignored on other OS:es
 		if (!$fp)
 			error('Error creating filepointer for file to delete/reset size, for attachment with id: "'.$item.'"',__FILE__,__LINE__);
 		fclose($fp); // file should now be 0 bytes, 'w' will place the pointer at start, and trunate the file... and I don't put anything in there...

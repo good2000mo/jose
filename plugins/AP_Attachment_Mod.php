@@ -958,7 +958,7 @@ elseif(isset($_POST['list_orphans']))
 	if(isset($_POST['change_subfolder']))	// we want to use the entered subfolder
 		$newname = $_POST['subfolder'];		// fiddle with security later... i.e. only allow 0-9 + a-z
 	else 
-		$newname = attach_generate_pathname($pun_config['attach_basefolder']);	// ok, we doesn't need to use a folder that has been created beforehand ...
+		$newname = attach_generate_pathname(PUN_ROOT.$pun_config['attach_basefolder'].'/');	// ok, we doesn't need to use a folder that has been created beforehand ...
 		
 	if(!attach_create_subfolder($newname))
 		error('Unable to create new subfolder with name '.$newname,__FILE__,__LINE__);
